@@ -1,0 +1,247 @@
+package org.gaterace.brillig.domain;
+
+/// description of Role
+enum Role {
+   /// user has guest privileges
+   GUEST = 0;
+   /// user has worker privileges
+   WORKER = 1;
+   /// user has dispatcher privileges
+   DIPATCHER= 2;
+   /// user has admin privileges
+   ADMINISTRATOR = 3;
+}
+
+enum OrderStatus {
+  /// order status is unknown
+  UNKNOWN = 0;
+  /// new order, not yet assigned
+  NEW = 1;
+  /// order has been assigned
+  ASSIGNED = 2;
+  /// order has been dispatched
+  DISPATCHED = 3;
+  /// order is complete
+  COMPLETE = 4;
+}
+
+/// Fields used in Brillig domain
+fieldset BrilligDomainSet {
+  // shadow maintenance fields
+  /// method result code
+  int32 error_code = 1;
+  /// creation date
+  datetime created;
+  /// modification date
+  datetime modified;
+  /// deletion date
+  datetime deleted;
+  /// has record been deleted?
+  bool is_deleted;
+  /// version of this record
+  int32 version;
+
+
+  /// unique identifier for a user of the system
+  int32 user_id;
+  /// login name for user
+  string(32) user_name;
+  /// user first name
+  string(32) first_name;
+  /// user last name
+  string(32) last_name;
+  /// user phone
+  string(32) phone;
+  /// user email
+  string(80) email;
+  /// user password encoded
+  string(64) password_enc;
+  /// associated billable item if this user is billable
+  int32 billable_item_id;
+  ///  Represents a user of the system
+  User user;
+  /// represents a collection of users
+  User users;  
+
+  /// associated user roles
+  UserRole user_roles;
+  /// user privilege role
+  Role role; 
+
+  /// unique identifier for a billable item
+  int32 item_id;
+  /// price of item
+  decimal price;
+  /// description of item
+  string(120) description;
+  /// unit of measure
+  string(20) unit_of_measure;
+  /// type of item
+  string(10) item_type;
+  /// billable item
+  BillableItem billable_item;
+  /// a collection of billable items
+  BillableItem billable_items;
+
+
+  /// unique identifier for a customer
+  int32 customer_id;
+  /// customer contact name
+  string(128) contact_name;
+  /// customer contact title
+  string(80) contact_title;
+  /// customer contact phone
+  string(32) contact_phone;
+  /// customer contact email
+  string(80) contact_email;
+  /// company phone
+  string(32) company_phone;
+  /// company name
+  string(80) company_name;
+  /// company address state
+  string(32) state;
+  /// company address city
+  string(80) city;
+  /// company address zip code
+  string(20) postal_code;
+  /// company address line 1
+  string(128) addr1;
+  /// company address line 2
+  string(128) addr2;
+  /// customer object
+  Customer customer;
+  /// collection of customes
+  Customer customers;
+  
+
+  /// unique identifier for a work order
+  int32 order_id;
+  /// scheduled start time for work order
+  datetime scheduled_start;
+  /// actual start time for work order
+  datetime actual_start;
+  /// scheduled completion time for work order
+  datetime actual_complete;
+  /// status of work order
+  OrderStatus order_status;
+  /// user id of employee assigned to work order
+  int32 assigned_to;
+  // customer_id
+  /// work order text description
+  string(4000) order_description;
+  /// work order service comment
+  string(4000) service_comment;
+  /// work order object
+  WorkOrder order;
+  /// a collection of work orders
+  WorkOrder orders; 
+
+  /// line number identifier of work order line item
+  int32 line_id;
+  /// unit price charged to customer for line item
+  decimal my_price;
+  /// quantity of line item
+  decimal line_quantity;
+  /// list of line items in work order
+  WorkOrderLine line_items;
+}
+
+/// Represents a user of the system
+class User fieldset(BrilligDomainSet) table(tb_User) {
+  idgen user_id;
+  auto created;
+  auto modified;
+  auto deleted;
+  auto is_deleted;
+  auto version;
+  required user_name;
+  required first_name;
+  required last_name;
+  required phone;
+  required email;
+  required password_enc;
+  optional billable_item_id;
+  virtual  description; 
+  map user_roles;
+
+  index primary (user_id);
+  index unique (user_name);
+}
+
+/// mapping of users to roles
+association UserRole fieldset(BrilligDomainSet) table(tb_UserRole) {
+  id user_id references User(user_id);
+  id role;
+}
+
+/// Represents a billable item
+class BillableItem fieldset(BrilligDomainSet) table(tb_BillableItem) {
+  idgen item_id;
+  auto created;
+  auto modified;
+  auto deleted;
+  auto is_deleted;
+  auto version;
+  required price;
+  required description;
+  required unit_of_measure;
+  required item_type;
+
+  index primary (item_id);
+}
+
+/// Represents a customer
+class Customer  fieldset(BrilligDomainSet) table(tb_Customer) {
+  idgen customer_id;
+  auto created;
+  auto modified;
+  auto deleted;
+  auto is_deleted;
+  auto version;
+  required contact_name;
+  required contact_title;
+  required contact_phone;
+  required contact_email;
+  required company_phone;
+  required company_name;
+  required state;
+  required city;
+  required postal_code;
+  required addr1;
+  required addr2;
+
+  index primary (customer_id);
+}
+
+
+/// Represents a work order
+class WorkOrder fieldset(BrilligDomainSet) table(tb_WorkOrder) {
+  idgen order_id;
+  auto created;
+  auto modified;
+  auto deleted;
+  auto is_deleted;
+  auto version;
+  optional scheduled_start;
+  optional actual_start;
+  optional actual_complete;
+  required order_status;
+  required assigned_to references User(user_id);
+  required customer_id references Customer(customer_id);
+  required order_description;
+  required service_comment;   
+  list line_items;
+
+  index primary (order_id); 
+}
+
+/// Represents a line item within a work order
+class WorkOrderLine fieldset(BrilligDomainSet) table(tb_WorkOrderLine) {
+  id order_id references WorkOrder(order_id);
+  id line_id;
+  required my_price;
+  required line_quantity;
+  required item_id references BillableItem(item_id);
+
+  index primary (order_id, line_id);
+}

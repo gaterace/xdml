@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package DML;
+
+option java_package = "org.gaterace.dml";
+option go_package = "dml";
+
+enum DmlParameterModifier {
+  PARAM_UNKNOWN = 0;
+  PARAM_REQUIRED = 4;
+  PARAM_OPTIONAL = 5;
+  PARAM_REPEATED = 6;
+}
+
+enum DmlFieldModifier {
+  MODIFIER_UNKNOWN = 0;
+  AUTO = 1;
+  ID = 2;
+  IDGEN = 3;
+  REQUIRED = 4;
+  OPTIONAL = 5;
+  REPEATED = 6;
+  MAP = 7;
+  LIST = 8;
+  VIRTUAL = 9;
+}
+
+enum DmlIndexType {
+  INDEX_TYPE_UNKNOWN = 0;
+  PRIMARY = 1;
+  UNIQUE = 2;
+  NONUNIQUE = 3;
+}
+
+enum DmlPatternType {
+  NONE = 0;
+  INSERT = 1;
+  UPDATE = 2;
+  SELECT = 3;
+  DELETE = 4;
+}
+
+message DmlEnumValue {
+  string enum_value_name = 1;
+  repeated string documentation = 2;
+  int32  enum_value = 3;
+}
+
+message DmlEnum {
+  string enum_name = 1;
+  repeated string documentation = 2;
+  repeated DmlEnumValue values = 3;
+}
+
+message DmlField {
+  string field_name = 1;
+  repeated string documentation = 2;
+  string field_type = 3;
+  string field_type_package = 4;
+  int32  field_type_qualifier = 5;
+  int32  field_value = 6;
+}
+
+
+message DmlFieldSet {
+  string fieldset_name = 1;
+  repeated string documentation = 2;
+  repeated DmlField fields = 3;
+  string extends_fieldset_name = 4;
+}
+
+message DmlClassField {
+  string field_name = 1;
+  DmlFieldModifier modifier = 2;
+  string references_class = 3;
+  string references_field = 4;
+}
+
+message DmlClassIndex {
+  DmlIndexType index_type = 1;
+  repeated string index_fields = 2;
+}
+
+message DmlClass {
+  string class_name = 1;
+  repeated string documentation = 2;
+  string fieldset_name = 3;
+  string table_name = 4;
+  bool is_association = 5;
+  repeated DmlClassField fields = 6;
+  repeated DmlClassIndex indexes = 7;
+}
+
+message DmlMethodParam {
+  DmlParameterModifier modifier = 1;
+  string parameter_field = 2;
+}
+
+message DmlServiceMethod {
+  string method_name = 1;
+  repeated string documentation = 2;
+  repeated DmlMethodParam input_fields = 3;
+  repeated DmlMethodParam output_fields = 4;
+  DmlPatternType pattern_type = 5;
+  string pattern_class = 6;
+  string pattern_class_package = 7;
+}
+
+
+message DmlService {
+  string service_name = 1;
+  repeated string documentation = 2;
+  string fieldset_name = 3;
+  repeated DmlServiceMethod methods = 5;
+}
+
+message DmlTree {
+  string package_name = 1;
+  repeated string imported_packages = 2;
+  repeated DmlEnum enum_list = 3;
+  repeated DmlFieldSet fieldset_list = 4;
+  repeated DmlClass class_list = 5;
+  repeated DmlService service_list = 6;
+}

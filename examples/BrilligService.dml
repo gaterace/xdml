@@ -1,0 +1,351 @@
+package org.gaterace.brillig.svc;
+
+import "BrilligDomain";
+
+/// Fields used in Brillig service
+fieldset BrilligServiceSet extends BrilligDomainSet {
+  /// placeholder param to avoid empty message
+  int32 dummy_param = 200;
+}
+
+/// service methods for brillig
+service BrilligSvc fieldset(BrilligServiceSet) {
+  /// create a new user
+  method create_user pattern(insert org.gaterace.brillig.domain.User) {
+    required user_name;
+    required first_name;
+    required last_name;
+    required phone;
+    required email;
+    required password_enc;
+    optional billable_item_id;
+  }
+  returns {
+    required error_code;
+    optional user_id;
+    optional created;
+  } 
+
+  /// update an existing user
+  method update_user pattern(update org.gaterace.brillig.domain.User) {
+    required user_id;
+    required version;
+    required first_name;
+    required last_name;
+    required phone;
+    required email;
+    required password_enc;
+    optional billable_item_id;   
+  }
+  returns {
+    required error_code;
+    optional modified;
+  }
+
+  /// delete an existing user
+  method delete_user pattern(delete org.gaterace.brillig.domain.User) {
+    required user_id;
+    required version;
+  }
+  returns {
+    required error_code;
+    optional deleted;
+  }
+
+  /// get a specific user by id
+  method get_user pattern(select org.gaterace.brillig.domain.User) {
+    required user_id;
+  }
+  returns {
+    required error_code;
+    optional user;
+  }
+
+  /// get a specific user by user name
+  method get_user_by_user_name pattern(select org.gaterace.brillig.domain.User) {
+    required user_name;
+  }
+  returns {
+    required error_code;
+    optional user;
+  }
+
+
+  /// get all users
+  method get_users pattern(select org.gaterace.brillig.domain.User) {
+    optional dummy_param;    
+  }
+  returns {
+    required error_code;
+    repeated users;
+  }
+
+  /// create a new user role
+  method create_user_role pattern(insert org.gaterace.brillig.domain.UserRole) {
+    required user_id;
+    required role;
+  }
+  returns {
+    required error_code;
+    optional created;
+  } 
+
+  /// get all roles for a user
+  method get_user_roles pattern(select org.gaterace.brillig.domain.UserRole) {
+    required user_id;
+  }
+  returns {
+    required error_code;
+    repeated user_roles;
+  }
+  /// delete a user role
+  method delete_user_role pattern(delete org.gaterace.brillig.domain.UserRole) {
+    required user_id;
+    required role;
+  }
+  returns {
+    required error_code;
+    optional deleted;
+  }
+
+  /// create a billable item
+  method create_billable_item pattern(insert org.gaterace.brillig.domain.BillableItem) {
+    required price;
+    required description;
+    required unit_of_measure;
+    required item_type; 
+  }
+  returns {
+    required error_code;
+    optional item_id;
+    optional created;
+  }
+
+  /// update a billable item
+  method update_billable_item pattern(update org.gaterace.brillig.domain.BillableItem) {
+    required item_id;
+    required version;
+    required price;
+    required description;
+    required unit_of_measure;
+    required item_type; 
+  }
+    returns {
+    required error_code;
+    optional modified;
+  }
+
+  /// delete a billable item
+  method delete_billable_item pattern(delete org.gaterace.brillig.domain.BillableItem) {
+    required item_id;
+    required version;
+  }
+  returns {
+    required error_code;
+    optional deleted;
+  }
+
+  /// get a specific billable item by id
+  method get_billable_item pattern(select org.gaterace.brillig.domain.BillableItem) {
+    required item_id;
+  }
+  returns {
+    required error_code;
+    optional billable_item;
+  }
+ 
+  /// get all billable items
+  method get_billable_items pattern(select org.gaterace.brillig.domain.BillableItem) {
+    optional dummy_param;    
+  }
+  returns {
+    required error_code;
+    repeated billable_item;
+  }
+
+  /// create a customer record
+  method create_customer pattern(insert org.gaterace.brillig.domain.Customer) {
+    required contact_name;
+    required contact_title;
+    required contact_phone;
+    required contact_email;
+    required company_phone;
+    required company_name;
+    required state;
+    required city;
+    required postal_code;
+    required addr1;
+    required addr2;
+
+  }
+  returns {
+    required error_code;
+    optional customer_id;
+    optional created;
+  }
+
+  /// update a customer record
+  method update_customer pattern(insert org.gaterace.brillig.domain.Customer) {
+    required customer_id;
+    required version;
+    required contact_name;
+    required contact_title;
+    required contact_phone;
+    required contact_email;
+    required company_phone;
+    required company_name;
+    required state;
+    required city;
+    required postal_code;
+    required addr1;
+    required addr2;
+  }
+  returns {
+    required error_code;
+    optional modified;
+  }
+  
+  /// delete a customer record
+  method delete_customer pattern(delete org.gaterace.brillig.domain.Customer) {
+    required customer_id;
+    required version;
+  }
+  returns {
+    required error_code;
+    optional deleted;
+  }
+
+  /// get a customer by customer id
+  method get_customer pattern(select org.gaterace.brillig.domain.Customer) {
+    required customer_id;
+  }
+  returns {
+    required error_code;
+    optional customer;
+  }
+
+  /// get all customers
+  method get_customers pattern(select org.gaterace.brillig.domain.Customer) {
+    optional dummy_param;        
+  }
+  returns {
+    required error_code;
+    repeated customers;
+  }
+
+  /// create a work order
+  method create_order pattern(insert org.gaterace.brillig.domain.WorkOrder) {
+    optional scheduled_start;
+    optional actual_start;
+    optional actual_complete;
+    required order_status;
+    required assigned_to; 
+    required customer_id;
+    required order_description;
+    required service_comment;   
+  }
+  returns {
+    required error_code;
+    optional order_id;
+    optional created;
+  }
+
+  /// update a work order
+  method update_order pattern(update org.gaterace.brillig.domain.WorkOrder) {
+    required order_id;
+    required version;
+    optional scheduled_start;
+    optional actual_start;
+    optional actual_complete;
+    required order_status;
+    required assigned_to; 
+    required customer_id;
+    required order_description;
+    required service_comment;   
+  }
+  returns {
+    required error_code;
+    optional modified;
+  }
+
+  /// delete a work order
+  method delete_order pattern(delete org.gaterace.brillig.domain.WorkOrder) {
+    required order_id;
+    required version;
+  }
+  returns {
+    required error_code;
+    optional deleted;
+  }
+
+  /// get a work order by id
+  method get_order pattern(select org.gaterace.brillig.domain.WorkOrder) {
+    required order_id;
+  }
+  returns {
+    required error_code;
+    optional order;
+  }
+
+  /// get all work orders for a customer
+  method get_orders_by_customer pattern(select org.gaterace.brillig.domain.WorkOrder) {
+    required customer_id;
+  }
+  returns {
+    required error_code;
+    repeated orders;
+  }
+
+  /// get all work orders assigned to a particular worker
+  method get_orders_by_assigned pattern(select org.gaterace.brillig.domain.WorkOrder) {
+    required assigned_to;
+  }
+  returns {
+    required error_code;
+    repeated orders;
+  }
+
+  /// create a work order line item
+  method create_order_line pattern(insert org.gaterace.brillig.domain.WorkOrderLine) {
+    required order_id;
+    required line_id;
+    required my_price;
+    required line_quantity;
+    required item_id;
+  }
+  returns {
+    required error_code;
+  }
+
+  /// update a work order line item
+  method update_order_line pattern(update org.gaterace.brillig.domain.WorkOrderLine) {
+    required order_id;
+    required line_id;
+    required my_price;
+    required line_quantity;
+    required item_id;
+  }
+  returns {
+    required error_code;
+  }
+
+  /// delete a work order line item
+  method delete_order_line pattern(delete org.gaterace.brillig.domain.WorkOrderLine) {
+    required order_id;
+    required line_id;
+  }
+  returns {
+    required error_code;
+  }
+
+  /// get all work order line items for a work order
+  method get_order_lines pattern(select org.gaterace.brillig.domain.WorkOrderLine) {
+    required order_id;
+  }
+  returns {
+    required error_code;
+    repeated line_items;
+  }
+
+  
+}
