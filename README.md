@@ -1,8 +1,8 @@
-#eXtended Data Modeling Language (xdml)
+# eXtended Data Modeling Language (xdml)
 
 Copyright 2017 Demian Harvill
 
-##Overview
+## Overview
 
 This provides and implements a domain-specific language to describe a data dictionary of fields
 and composite objects (structures, classes, enumerations, services and methods). The basic goals are 
@@ -35,7 +35,7 @@ The current artifacts that can be generated are:
 * stored procedures
 * application binding code
 
-##Building
+## Building
 
 Not wanting to commit a large vendor directory, please use golang/dep  
 
@@ -45,11 +45,11 @@ dep ensure
 
 to build the vendor directory from Gopkg.toml
 
-##dmlgenerate
+## dmlgenerate
 
 The command line tool in cmd/dmlgenerate/dmgenerate is the main utility.  Run without any parameters to see help.
 
-##Examples
+## Examples
 
 There are sample .dml source files in the examples/ directory
 
@@ -57,7 +57,7 @@ BrilligDomain.dml describes the domain objects for an application
 
 BrilligService.dml  includes BrilligDomain adn describes a service with methods for an application.
 
-##The XDML Domain Specific Language
+## The XDML Domain Specific Language
 
 The Antlr4 grammar for the language is defined in antlr/DML.g4
 
