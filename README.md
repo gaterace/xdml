@@ -1,8 +1,8 @@
-#eXtended Data Modeling Language (xdml)#
+#eXtended Data Modeling Language (xdml)
 
 Copyright 2017 Demian Harvill
 
-##Overview##
+##Overview
 
 This provides and implements a domain-specific language to describe a data dictionary of fields
 and composite objects (structures, classes, enumerations, services and methods). The basic goals are 
@@ -35,7 +35,7 @@ The current artifacts that can be generated are:
 * stored procedures
 * application binding code
 
-##Building##
+##Building
 
 Not wanting to commit a large vendor directory, please use golang/dep  
 
@@ -45,11 +45,11 @@ dep ensure
 
 to build the vendor directory from Gopkg.toml
 
-##dmlgenerate##
+##dmlgenerate
 
 The command line tool in cmd/dmlgenerate/dmgenerate is the main utility.  Run without any parameters to see help.
 
-##Examples##
+##Examples
 
 There are sample .dml source files in the examples/ directory
 
@@ -57,7 +57,7 @@ BrilligDomain.dml describes the domain objects for an application
 
 BrilligService.dml  includes BrilligDomain adn describes a service with methods for an application.
 
-##The XDML Domain Specific Language##
+##The XDML Domain Specific Language
 
 The Antlr4 grammar for the language is defined in antlr/DML.g4
 
@@ -90,20 +90,20 @@ Where the extends clause is optional, and implies that this field set is a conti
 
 Where <modifier> and = <field_number> are optional. The builtin field types (and associated modifiers) are:
 
-•	double
-•	float
-•	int32
-•	int64
-•	uint32
-•	uint64
-•	bool
-•	string(<max_string_length>)
-•	bytes(<max_byte_array length>) 
-•	chararray(<fixed_string_length>)
-•	bytearray(<fixed_byte_array_length>)
-•	datetime
-•	guid
-•	decimal
+*	double
+*	float
+*	int32
+*	int64
+*	uint32
+*	uint64
+*	bool
+*	string(<max_string_length>)
+*	bytes(<max_byte_array length>) 
+*	chararray(<fixed_string_length>)
+*	bytearray(<fixed_byte_array_length>)
+*	datetime
+*	guid
+*	decimal
 
 The field type can also be a Class name or Enum name as described later. If the = <field_number> is not given, then the implied field_number is one greater than the last field number. This can be used in the generation of protobuf definitions. By convention, field names are lower case with underscores; they will be converted to camel case or other patterns as needed.
 
@@ -139,15 +139,15 @@ class <className> fieldset(<fieldSetName>) [table (<tableName)}{
 
 Where the field_name is described in the fieldSet (or one that it is derived from). By convention, the <className> is camel case (as in UserRole) , with the first character upper case.  The valid <class_field_modifiers> and semantics are:
 
-•	required : class field is required (NOT NULL for SQL)
-•	optional: class field is optional (NULL for SQL)
-•	repeated: class field occurs multiple times, possibly zero times
-•	auto: certain fields (created, modified, deleted, is_deleted, version) have predefined semantics
-•	id: class field is used to identify the class instance
-•	idgen:  class field is used to identify the class instance and will be generated automatically for SQL
-•	virtual: class field is not really a part of the class but will be supplied virtually
-•	map: class field is a one-to-many map to instances of another class
-•	list: class field is an embedded list of instances of another class
+*	required : class field is required (NOT NULL for SQL)
+*	optional: class field is optional (NULL for SQL)
+*	repeated: class field occurs multiple times, possibly zero times
+*	auto: certain fields (created, modified, deleted, is_deleted, version) have predefined semantics
+*	id: class field is used to identify the class instance
+*	idgen:  class field is used to identify the class instance and will be generated automatically for SQL
+*	virtual: class field is not really a part of the class but will be supplied virtually
+*	map: class field is a one-to-many map to instances of another class
+*	list: class field is an embedded list of instances of another class
 
 If the table(tableName>) option is used, SQL indices can be defined.  Some examples are:
 
@@ -187,17 +187,17 @@ returns {
 
 Again, by convention, <method_name> is lowercase with underscores (like <fieldname>), as in create_account. If the optional pattern clause is given, this will be used to generate SQL stored procedures. The valid <proc_type> values are:
 
-•	select
-•	insert
-•	update
-•	delete
+*	select
+*	insert
+*	update
+*	delete
 
 And the <qualified_class_name> is the <dmlPackageName>.<className> if the class is defined in a separate included dml package, or simply <className> if defined in this package.
 
 The valid <paramModifier> values are a subset of the <classFieldModifier> values seen before:
 
-•	required
-•	optional
-•	repeated
+*	required
+*	optional
+*	repeated
 
 
