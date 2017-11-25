@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gaterace.org/xdml/pkg/compiler"
-	"gaterace.org/xdml/pkg/gen"
+	"github.com/gaterace/xdml/pkg/compiler"
+	"github.com/gaterace/xdml/pkg/gen"
 )
 
 var resequence bool

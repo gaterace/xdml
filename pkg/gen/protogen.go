@@ -10,8 +10,8 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"gaterace.org/xdml/pkg/compiler"
-	"gaterace.org/xdml/pkg/dml"
+	"github.com/gaterace/xdml/pkg/compiler"
+	"github.com/gaterace/xdml/pkg/dml"
 )
 
 type GenBase struct {

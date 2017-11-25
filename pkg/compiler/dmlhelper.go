@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gaterace.org/xdml/pkg/dml"
+	"github.com/gaterace/xdml/pkg/dml"
 	"github.com/golang/protobuf/proto"
 )
 

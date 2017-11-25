@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"gaterace.org/xdml/pkg/dml"
-	"gaterace.org/xdml/pkg/parser"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"github.com/gaterace/xdml/pkg/dml"
+	"github.com/gaterace/xdml/pkg/parser"
 )
 
 type DmlErrorListener struct {

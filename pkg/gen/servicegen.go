@@ -6,9 +6,8 @@ import (
 	"log"
 	"os"
 
-	"gaterace.org/xdml/pkg/dml"
-
-	"gaterace.org/xdml/pkg/compiler"
+	"github.com/gaterace/xdml/pkg/compiler"
+	"github.com/gaterace/xdml/pkg/dml"
 )
 
 type GenServiceCode struct {
