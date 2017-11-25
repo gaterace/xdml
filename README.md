@@ -35,6 +35,16 @@ The current artifacts that can be generated are:
 * stored procedures
 * application binding code
 
+##Building##
+
+Not wanting to commit a large vendor directory, please use golang/dep  
+
+```
+dep ensure 
+```
+
+to build the vendor directory from Gopkg.toml
+
 ##dmlgenerate##
 
 The command line tool in cmd/dmlgenerate/dmgenerate is the main utility.  Run without any parameters to see help.
