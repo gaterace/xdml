@@ -1,0 +1,13 @@
+package dml;
+
+message DateTime {
+  required int64 milliseconds = 1;
+}
+
+message Decimal {
+  required string plaintext = 1;
+}
+
+message Guid {
+  required bytes guid = 1;
+}
