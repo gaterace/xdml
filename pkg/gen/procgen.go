@@ -21,6 +21,7 @@ type GenProc struct {
 	ErrCodeParam  string
 	InputPrefix   string
 	OutputPrefix  string
+	DtmNow        string
 	Now           string
 	TableAlias    *GenNameVal
 	Params        []*GenParam
@@ -123,10 +124,12 @@ func ProcGenInit(helper *compiler.DmlHelper, dbname string, dbengine string, fie
 
 	genProc.InputPrefix = "in_"
 	genProc.OutputPrefix = "out_"
+	genProc.DtmNow = "dtmNow"
 
 	if dbengine == "sqlserver" {
 		genProc.InputPrefix = "@"
-		genProc.OutputPrefix = "@"
+		genProc.OutputPrefix = "@out_"
+		genProc.DtmNow = "@dtmNow"
 	}
 
 	genProc.Now = "NOW()"
@@ -241,19 +244,19 @@ func ProcGenDelete(helper *compiler.DmlHelper, dbname string, dbengine string, f
 	}
 
 	nameVal := NewGenNameVal()
-	nameVal.Name = "dtmNow"
+	nameVal.Name = genProc.DtmNow
 	nameVal.Val = "DATETIME"
 	genProc.Declares = append(genProc.Declares, nameVal)
 
 	nameVal = NewGenNameVal()
-	nameVal.Name = "dtmNow"
+	nameVal.Name = genProc.DtmNow
 	nameVal.Val = genProc.Now
 	genProc.Sets = append(genProc.Sets, nameVal)
 
 	if hasDeleted {
 		nameVal := NewGenNameVal()
 		nameVal.Name = genProc.OutputPrefix + "dtmDeleted"
-		nameVal.Val = "dtmNow"
+		nameVal.Val = genProc.DtmNow
 		genProc.Sets = append(genProc.Sets, nameVal)
 	}
 
@@ -317,7 +320,7 @@ func ProcGenDelete(helper *compiler.DmlHelper, dbname string, dbengine string, f
 			if fieldName == "deleted" {
 				nameVal := NewGenNameVal()
 				nameVal.Name = dbName
-				nameVal.Val = "dtmNow"
+				nameVal.Val = genProc.DtmNow
 				genProc.Body = append(genProc.Body, nameVal)
 			}
 
@@ -387,19 +390,19 @@ func ProcGenUpdate(helper *compiler.DmlHelper, dbname string, dbengine string, f
 	}
 
 	nameVal := NewGenNameVal()
-	nameVal.Name = "dtmNow"
+	nameVal.Name = genProc.DtmNow
 	nameVal.Val = "DATETIME"
 	genProc.Declares = append(genProc.Declares, nameVal)
 
 	nameVal = NewGenNameVal()
-	nameVal.Name = "dtmNow"
+	nameVal.Name = genProc.DtmNow
 	nameVal.Val = genProc.Now
 	genProc.Sets = append(genProc.Sets, nameVal)
 
 	if hasModified {
 		nameVal := NewGenNameVal()
 		nameVal.Name = genProc.OutputPrefix + "dtmModified"
-		nameVal.Val = "dtmNow"
+		nameVal.Val = genProc.DtmNow
 		genProc.Sets = append(genProc.Sets, nameVal)
 	}
 
@@ -449,7 +452,7 @@ func ProcGenUpdate(helper *compiler.DmlHelper, dbname string, dbengine string, f
 			if fieldName == "modified" {
 				nameVal := NewGenNameVal()
 				nameVal.Name = dbName
-				nameVal.Val = "dtmNow"
+				nameVal.Val = genProc.DtmNow
 				genProc.Body = append(genProc.Body, nameVal)
 			} else if fieldName == "is_deleted" {
 				nameVal := NewGenNameVal()
@@ -521,19 +524,19 @@ func ProcGenInsert(helper *compiler.DmlHelper, dbname string, dbengine string, f
 	}
 
 	nameVal := NewGenNameVal()
-	nameVal.Name = "dtmNow"
+	nameVal.Name = genProc.DtmNow
 	nameVal.Val = "DATETIME"
 	genProc.Declares = append(genProc.Declares, nameVal)
 
 	nameVal = NewGenNameVal()
-	nameVal.Name = "dtmNow"
+	nameVal.Name = genProc.DtmNow
 	nameVal.Val = genProc.Now
 	genProc.Sets = append(genProc.Sets, nameVal)
 
 	if hasCreated {
 		nameVal := NewGenNameVal()
 		nameVal.Name = genProc.OutputPrefix + "dtmCreated"
-		nameVal.Val = "dtmNow"
+		nameVal.Val = genProc.DtmNow
 		genProc.Sets = append(genProc.Sets, nameVal)
 	}
 
@@ -566,11 +569,11 @@ func ProcGenInsert(helper *compiler.DmlHelper, dbname string, dbengine string, f
 			nameVal.Name = dbName
 			switch fieldName {
 			case "created":
-				nameVal.Val = "dtmNow"
+				nameVal.Val = genProc.DtmNow
 			case "modified":
-				nameVal.Val = "dtmNow"
+				nameVal.Val = genProc.DtmNow
 			case "deleted":
-				nameVal.Val = "dtmNow"
+				nameVal.Val = genProc.DtmNow
 			case "is_deleted":
 				nameVal.Val = "0"
 			case "version":
