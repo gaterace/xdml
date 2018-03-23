@@ -724,7 +724,7 @@ func ProcGenSelect(helper *compiler.DmlHelper, dbname string, dbengine string, f
 
 }
 
-func ProcGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine string) error {
+func ProcGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine string, externalTemplate string) error {
 	if (helper == nil) || (outdir == "") {
 		return fmt.Errorf("ProcGen invalid parameters")
 	}
@@ -774,9 +774,12 @@ func ProcGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine 
 
 			var tmpl string
 
-			tmpl = ProcMysqlTemplate
+			if externalTemplate != "" {
+				tmpl = externalTemplate
+			} else if dbengine == "mysql" {
 
-			if dbengine == "sqlserver" {
+				tmpl = ProcMysqlTemplate
+			} else if dbengine == "sqlserver" {
 				tmpl = ProcSqlServerTemplate
 			}
 

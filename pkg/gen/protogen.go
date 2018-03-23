@@ -215,7 +215,7 @@ func firstLetterLower(s string) string {
 	return string(b.r)
 }
 
-func ProtoGen(helper *compiler.DmlHelper, outdir string, resequence bool) error {
+func ProtoGen(helper *compiler.DmlHelper, outdir string, resequence bool, externalTemplate string) error {
 	if (helper == nil) || (outdir == "") {
 		return fmt.Errorf("ProtoGen invalid parameters")
 	}
@@ -399,8 +399,16 @@ func ProtoGen(helper *compiler.DmlHelper, outdir string, resequence bool) error 
 
 	defer protoFile.Close()
 
+	var tmpl string
+
+	if externalTemplate != "" {
+		tmpl = externalTemplate
+	} else {
+		tmpl = ProtoTemplate
+	}
+
 	// run the template
-	var t = template.Must(template.New("t").Parse(ProtoTemplate))
+	var t = template.Must(template.New("t").Parse(tmpl))
 
 	if err := t.Execute(protoFile, genBase); err != nil {
 		log.Fatal(err)

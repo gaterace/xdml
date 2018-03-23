@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,6 +18,7 @@ var outdir string
 var dbname string
 var dbengine string
 var language string
+var extemplate string
 
 func init() {
 	flag.BoolVar(&help, "h", false, "Show dmlgenerate help.")
@@ -26,6 +28,7 @@ func init() {
 	flag.StringVar(&dbname, "dbname", "", "Database name for generated files.")
 	flag.StringVar(&dbengine, "dbengine", "mysql", "Database engine for generated files.")
 	flag.StringVar(&language, "language", "java", "Computer language for generated code.")
+	flag.StringVar(&extemplate, "extemplate", "", "Use file as external template for generated code.")
 
 }
 
@@ -55,8 +58,8 @@ func main() {
 	if len(myArgs) > 0 {
 		command = myArgs[0]
 		if command == "version" {
-			fmt.Println("xdml dmlgenerate - version: 0.9.1")
-			fmt.Println("Copyright Demian Harvill 2017")
+			fmt.Println("xdml dmlgenerate - version: 0.9.2")
+			fmt.Println("Copyright Demian Harvill 2018")
 			return
 		}
 	}
@@ -100,6 +103,18 @@ func main() {
 
 	outdir = absPath
 
+	var externalTemplate string
+
+	if extemplate != "" {
+		buf, err := ioutil.ReadFile(extemplate)
+		if err != nil {
+			fmt.Printf("%v\n", err)
+			return
+		}
+
+		externalTemplate = string(buf)
+	}
+
 	if command == "protogen" {
 
 		astHelper, err := compiler.Load(infile)
@@ -108,7 +123,7 @@ func main() {
 			fmt.Printf("%v\n", err)
 		}
 
-		err = gen.ProtoGen(astHelper, outdir, resequence)
+		err = gen.ProtoGen(astHelper, outdir, resequence, externalTemplate)
 		if err != nil {
 			fmt.Printf("%v\n", err)
 		}
@@ -125,7 +140,7 @@ func main() {
 			fmt.Printf("%v\n", err)
 		}
 
-		err = gen.TableGen(astHelper, outdir, dbname, dbengine)
+		err = gen.TableGen(astHelper, outdir, dbname, dbengine, externalTemplate)
 		if err != nil {
 			fmt.Printf("%v\n", err)
 		}
@@ -136,7 +151,7 @@ func main() {
 			fmt.Printf("%v\n", err)
 		}
 
-		err = gen.ProcGen(astHelper, outdir, dbname, dbengine)
+		err = gen.ProcGen(astHelper, outdir, dbname, dbengine, externalTemplate)
 		if err != nil {
 			fmt.Printf("%v\n", err)
 		}
@@ -147,7 +162,7 @@ func main() {
 			fmt.Printf("%v\n", err)
 		}
 
-		err = gen.ServiceGen(astHelper, outdir, dbname, dbengine, language)
+		err = gen.ServiceGen(astHelper, outdir, dbname, dbengine, language, externalTemplate)
 
 		if err != nil {
 			fmt.Printf("%v\n", err)

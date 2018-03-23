@@ -156,7 +156,7 @@ func DbNameAndType(fieldName string, fieldType string, fieldTypeQual int, dbengi
 	return dbName, dbType
 }
 
-func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine string) error {
+func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine string, externalTemplate string) error {
 	if (helper == nil) || (outdir == "") {
 		return fmt.Errorf("TableGen invalid parameters")
 	}
@@ -267,7 +267,9 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 
 		var tmpl string
 
-		if dbengine == "mysql" {
+		if externalTemplate != "" {
+			tmpl = externalTemplate
+		} else if dbengine == "mysql" {
 			tmpl = TableMysqlTemplate
 		} else if dbengine == "sqlserver" {
 			tmpl = TableSqlServerlTemplate

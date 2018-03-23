@@ -1,6 +1,6 @@
 package gen
 
-const ServiceJavaTemplateItf = `package {{ .ItfPackage }};
+const ServiceJavaTemplate = `{{ if eq  .Action "itf" }}package {{ .ItfPackage }};
  
 {{ range .ItfImports }}import {{ . }};
 {{ end }}
@@ -13,10 +13,7 @@ const ServiceJavaTemplateItf = `package {{ .ItfPackage }};
 
 {{ end }}}
 
-`
-
-const ServiceJavaTemplateImpl = `package {{ .ImplPackage }};
-
+{{ else }}package {{ .ImplPackage }};
 import {{ .ItfPackage }}.I{{ .Name }};
 import java.sql.*;
 import javax.sql.DataSource;
@@ -36,7 +33,7 @@ import dml.DmlUtil;
 
     public {{ .Name }}(DataSource dataSource) 
     {
-    	this.dataSource = dataSource;
+        this.dataSource = dataSource;
     }
 {{ range .Methods }}
     public {{ .ResponseClass }}  {{ .MethodName }}({{ .RequestClass }} request)
@@ -51,18 +48,18 @@ import dml.DmlUtil;
 
             stmt = conn.prepareCall("{CALL {{ .ProcName }}({{ .ParamPattern }})}");
 
-{{ range .Params }}{{ if .IsOutput }}            stmt.registerOutParameter({{ .ParamIndex }}, Types.{{ .SqlType }}); // {{ .SqlName }}{{ else }}            stmt.{{ .SqlSetter }}({{ .ParamIndex }}, {{ .JavaGetter }}); //  {{ .SqlName }}{{ end }}
+{{ range .Params }}{{ if .IsOutput }}            stmt.registerOutParameter({{ .ParamIndex }}, Types.{{ .SqlType }}); // {{ .SqlName }}{{ else }}            stmt.{{ .SqlSetter }}({{ .ParamIndex }}, {{ if ne .Converter "" }}{{ .Converter }}({{ end }}{{ .JavaGetter }}{{ if ne .Converter "" }}){{ end }}); //  {{ .SqlName }}{{ end }}
 {{ end }}
 {{ if .HasResultSet }}            boolean hasResults = stmt.execute();
             if (hasResults) {
-                rs = stmt.getResultSet();            	
+                rs = stmt.getResultSet();               
 {{ if .HasRepeated }}                while (rs.next()) {{ else }}                if (rs.next()){{ end }} {
 {{ if .IdResult }}{{ range .Results }}                    response.{{ .JavaSetter}}(rs.{{ .SqlGetter }}("{{ .ColumnName }}");{{ end }}{{ else }}
-                    {{ .ResultClass }}.Builder {{ .ResultObj }} = {{ .ResultClass }}.newBuilder();	
+                    {{ .ResultClass }}.Builder {{ .ResultObj }} = {{ .ResultClass }}.newBuilder();  
 {{ range .Results }}                    {{ .ResultObj }}.{{ .JavaSetter}}({{ if ne .Converter "" }}{{ .Converter }}({{ end }}rs.{{ .SqlGetter }}("{{ .ColumnName }}"){{ if ne .Converter "" }}){{ end }});
 {{ end  }}
                     response.{{ .ResultSetter }}({{ .ResultObj }}); {{ end }}
-                }              	
+                }               
             } else {
                 // not found error?
             }
@@ -83,7 +80,7 @@ import dml.DmlUtil;
             {
                 try
                 {
-                	rs.close();
+                    rs.close();
                 }
                 catch (SqlException sqlex)
                 {
@@ -92,7 +89,7 @@ import dml.DmlUtil;
                 rs = null;
 
             }
-{{ end }}        	
+{{ end }}           
             if (stmt != null)
             {
                 try
@@ -121,11 +118,11 @@ import dml.DmlUtil;
 
         }
 
-        return response.build();	
+        return response.build();    
     }
 {{ end }}
 }
 
 
-
+{{ end }}
 `
