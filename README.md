@@ -1,6 +1,6 @@
 # eXtended Data Modeling Language (xdml)
 
-Copyright 2017 Demian Harvill
+Copyright 2017-2019 Demian Harvill
 
 ## Overview
 
