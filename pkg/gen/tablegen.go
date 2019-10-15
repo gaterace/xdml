@@ -130,7 +130,7 @@ func DbNameAndType(fieldName string, fieldType string, fieldTypeQual int, dbengi
 		dbType = "DATETIME"
 	case "guid":
 		prefix = "uid"
-		dbType = "BINARY(40)"
+		dbType = "BINARY(16)"
 	case "decimal":
 		prefix = "dec"
 		dbType = "DECIMAL(19,2)"
