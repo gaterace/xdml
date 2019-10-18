@@ -29,6 +29,25 @@ DROP TABLE IF EXISTS {{ .TableName }};
 ) ENGINE=InnoDB;
 
 `
+const TablePostgresTemplate = `
+{{ range .Documentation }}-- {{ . }}
+{{ end }}CREATE TABLE {{ .TableName }}
+(
+{{ range .Columns }}
+{{ range .Documentation }}    -- {{ . }}
+{{ end }}    {{ .ColumnName }} {{ .ColumnType }}{{ if .ColumnModifier }} {{ .ColumnModifier }}{{ end }} {{ if .IsNullable }}NULL{{ else }}NOT NULL{{ end }}{{ if .HasComma }},{{ end }}{{ end }}
+
+{{ range .Indices }}
+{{ if .IsPrimary }}    PRIMARY KEY ({{ .FieldList }}){{ end }}{{end}}
+);
+
+{{ range .Indices }}{{ if not .IsPrimary }}    
+CREATE {{ if .IsUnique }}UNIQUE{{ end }} INDEX {{ .IndexName }} ON {{ .TableName }}
+(
+	{{ .FieldList }}
+); 
+{{ end }}{{ end }}
+`
 
 const TableSqlServerlTemplate = `USE {{ .DatabaseName }};
 GO

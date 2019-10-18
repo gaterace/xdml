@@ -157,13 +157,45 @@ func DbNameAndType(fieldName string, fieldType string, fieldTypeQual int, dbengi
 		case "chararray":
 			dbType = "CHAR(" + strconv.Itoa(fieldTypeQual) + ")"
 		}
+	}
 
+	if dbengine == "postgres" {
+		switch fieldType {
+		case "uint32":
+			prefix = "int"
+			dbType = "INT"
+		case "uint64":
+			prefix = "inb"
+			dbType = "BIGINT"
+		case "bytes":
+			prefix = "bin"
+			dbType = "BYTEA"
+		case "bytearray":
+			prefix = "bin"
+			dbType = "BYTEA"
+		case "datetime":
+			dbType = "TIMESTAMP"
+		case "guid":
+			prefix = "uid"
+			dbType = "BYTEA"
+		case "float":
+			prefix = "flt"
+			dbType = "REAL"
+		case "double":
+			prefix = "dbl"
+			dbType = "FLOAT8"
+		}
 	}
 	if prefix == "" {
 		dbName = ""
 		dbType = ""
 	} else {
-		dbName = prefix + UnderscoreToCamelcase(fieldName)
+		if dbengine == "postgres" {
+			// dbName = prefix + "_" + fieldName
+			dbName = fieldName
+		} else {
+			dbName = prefix + UnderscoreToCamelcase(fieldName)
+		}
 	}
 
 	return dbName, dbType
@@ -178,8 +210,8 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 		return fmt.Errorf("TableGen requires dbname")
 	}
 
-	if (dbengine != "mysql") && (dbengine != "sqlserver") {
-		return fmt.Errorf("TableGen supports only dbengine of mysql and sqlserver")
+	if (dbengine != "mysql") && (dbengine != "sqlserver") && (dbengine != "postgres") {
+		return fmt.Errorf("TableGen supports only dbengine of mysql, postgres and sqlserver")
 	}
 
 	for _, class := range helper.AstRoot.GetClassList() {
@@ -191,6 +223,9 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 
 		genTable := NewGenTable()
 		genTable.TableName = class.GetTableName()
+		if dbengine == "postgres" {
+			genTable.TableName = strings.ToLower(class.GetTableName())
+		}
 		genTable.DatabaseName = dbname
 		for _, doc := range class.GetDocumentation() {
 			genTable.Documentation = append(genTable.Documentation, doc)
@@ -219,6 +254,14 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 						genColumn.IsNullable = field.GetModifier() == dml.DmlFieldModifier_OPTIONAL
 						if field.GetModifier() == dml.DmlFieldModifier_IDGEN {
 							genColumn.ColumnModifier = "AUTO_INCREMENT"
+							if dbengine == "postgres" {
+								if dbType == "INT" {
+									genColumn.ColumnType = "SERIAL"
+								} else if dbType == "BIGINT" {
+									genColumn.ColumnType = "BIGSERIAL"
+								}
+								genColumn.ColumnModifier = ""
+							}
 						}
 
 						genTable.Columns = append(genTable.Columns, genColumn)
@@ -231,6 +274,7 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 		for _, index := range class.GetIndexes() {
 			genIndex := NewGenIndex()
 			genIndex.TableName = genTable.TableName
+
 			indexDbNames := make([]string, 0)
 			for _, indexField := range index.GetIndexFields() {
 				dmlField := helper.GetField(fieldSetName, indexField)
@@ -249,10 +293,14 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 				genIndex.IsPrimary = true
 				genIndex.IndexName = "PK_" + genTable.TableName
 			} else {
+				underscoreList := strings.Join(indexDbNames, "_")
+				genIndex.IndexName = "IX_" + genTable.TableName + "_" + underscoreList
+				if dbengine == "postgres" {
+					genIndex.IndexName = strings.ToLower(genIndex.IndexName)
+				}
 				if index.GetIndexType() == dml.DmlIndexType_UNIQUE {
 					genIndex.IsUnique = true
-					underscoreList := strings.Join(indexDbNames, "_")
-					genIndex.IndexName = "IX_" + genTable.TableName + "_" + underscoreList
+
 				}
 			}
 
@@ -286,6 +334,8 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 			tmpl = TableMysqlTemplate
 		} else if dbengine == "sqlserver" {
 			tmpl = TableSqlServerlTemplate
+		} else if dbengine == "postgres" {
+			tmpl = TablePostgresTemplate
 		}
 
 		var t = template.Must(template.New("t").Parse(tmpl))
