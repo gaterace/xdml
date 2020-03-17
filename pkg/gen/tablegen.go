@@ -292,6 +292,9 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 			if index.GetIndexType() == dml.DmlIndexType_PRIMARY {
 				genIndex.IsPrimary = true
 				genIndex.IndexName = "PK_" + genTable.TableName
+				if dbengine == "postgres" {
+					genIndex.IndexName = strings.ToLower(genIndex.IndexName)
+				}
 			} else {
 				underscoreList := strings.Join(indexDbNames, "_")
 				genIndex.IndexName = "IX_" + genTable.TableName + "_" + underscoreList
@@ -313,8 +316,11 @@ func TableGen(helper *compiler.DmlHelper, outdir string, dbname string, dbengine
 		numColumns := len(genTable.Columns)
 		if numIndices > 0 {
 			genTable.Indices[numIndices-1].HasComma = false
-		} else if numColumns > 0 {
-			genTable.Columns[numColumns-1].HasComma = false
+		}
+		if numColumns > 0 {
+			if (dbengine == "postgres") || (numIndices > 0) {
+				genTable.Columns[numColumns-1].HasComma = false
+			}
 		}
 
 		sqlName := outdir + string(os.PathSeparator) + genTable.TableName + ".sql"

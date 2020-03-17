@@ -36,7 +36,7 @@ const TablePostgresTemplate = `
 {{ range .Columns }}
 {{ range .Documentation }}    -- {{ . }}
 {{ end }}    {{ .ColumnName }} {{ .ColumnType }}{{ if .ColumnModifier }} {{ .ColumnModifier }}{{ end }} {{ if .IsNullable }}NULL{{ else }}NOT NULL{{ end }}{{ if .HasComma }},{{ end }}{{ end }}
-
+);
 
 {{ range .Indices }}    
 CREATE {{ if .IsPrimary }}UNIQUE{{ end }} {{ if .IsUnique }}UNIQUE{{ end }} INDEX {{ .IndexName }} ON {{ .TableName }}
