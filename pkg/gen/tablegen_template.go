@@ -37,16 +37,13 @@ const TablePostgresTemplate = `
 {{ range .Documentation }}    -- {{ . }}
 {{ end }}    {{ .ColumnName }} {{ .ColumnType }}{{ if .ColumnModifier }} {{ .ColumnModifier }}{{ end }} {{ if .IsNullable }}NULL{{ else }}NOT NULL{{ end }}{{ if .HasComma }},{{ end }}{{ end }}
 
-{{ range .Indices }}
-{{ if .IsPrimary }}    PRIMARY KEY ({{ .FieldList }}){{ end }}{{end}}
-);
 
-{{ range .Indices }}{{ if not .IsPrimary }}    
-CREATE {{ if .IsUnique }}UNIQUE{{ end }} INDEX {{ .IndexName }} ON {{ .TableName }}
+{{ range .Indices }}    
+CREATE {{ if .IsPrimary }}UNIQUE{{ end }} {{ if .IsUnique }}UNIQUE{{ end }} INDEX {{ .IndexName }} ON {{ .TableName }}
 (
 	{{ .FieldList }}
 ); 
-{{ end }}{{ end }}
+{{ end }}
 `
 
 const TableSqlServerlTemplate = `USE {{ .DatabaseName }};
