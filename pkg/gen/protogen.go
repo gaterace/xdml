@@ -420,12 +420,43 @@ func ProtoGen(helper *compiler.DmlHelper, outdir string, resequence bool, extern
 		tmpl = ProtoTemplate
 	}
 
+	var funcMap = template.FuncMap{
+		"title": asTitle,
+		"jsontype": jsonType,
+	}
+
 	// run the template
-	var t = template.Must(template.New("t").Parse(tmpl))
+	var t = template.New("t")
+	t.Funcs(funcMap)
+	t.Parse(tmpl)
 
 	if err := t.Execute(protoFile, genBase); err != nil {
 		log.Fatal(err)
 	}
 
 	return nil
+}
+
+func asTitle(name string) string {
+	pieces := strings.Split(name, "_")
+	whole := strings.Join(pieces, " ")
+	title := strings.Title(whole)
+
+	return title
+}
+
+func jsonType(name string) string {
+	json := name
+	switch name {
+	case "int32":
+		json = "integer"
+	case "int64":
+		json = "integer"
+	case "bool":
+		json = "boolean"
+	case "dml.DateTime":
+		json = "datetime"
+	}
+	
+	return json
 }
