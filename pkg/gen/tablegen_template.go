@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS {{ .TableName }};
 (
 {{ range .Columns }}
 {{ range .Documentation }}    -- {{ . }}
-{{ end }}    {{ .ColumnName }} {{ .ColumnType }}{{ if .ColumnModifier }} {{ .ColumnModifier }}{{ end }} {{ if .IsNullable }}NULL{{ else }}NOT NULL{{ end }}{{ if .HasComma }},{{ end }}{{ end }}
+{{ end }}    {{ .ColumnName }} {{ .ColumnType }}{{ if .ColumnModifier }} {{ .ColumnModifier }}{{ end }} {{ if .IsNullable }}NULL{{ else }}NOT NULL{{ end }},{{ end }}
 
 {{ range .Indices }}
 {{ if .IsPrimary }}    PRIMARY KEY{{ else }}{{ if .IsUnique }}    UNIQUE{{ else }}    INDEX{{ end }}{{ end }} ({{ .FieldList }}){{ if .HasComma }},{{ end }}{{ end }}
