@@ -557,7 +557,11 @@ func CompileAst(infile string) (*dml.DmlTree, error) {
 		return nil, err
 	}
 
-	input := antlr.NewFileStream(infile)
+	input, err := antlr.NewFileStream(infile)
+	if err != nil {
+		return nil, err
+	}
+
 	lexer := parser.NewDMLLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
 	p := parser.NewDMLParser(stream)
