@@ -1,6 +1,6 @@
 # eXtended Data Modeling Language (xdml)
 
-Copyright 2017-2019 Demian Harvill
+Copyright 2017-2021 Demian Harvill
 
 ## Overview
 
@@ -37,13 +37,10 @@ The current artifacts that can be generated are:
 
 ## Building
 
-Not wanting to commit a large vendor directory, please use golang/dep  
+Building requires support for Go modules to handle dependencies; this has been tested with go version 15.3:
 
-```
-dep ensure 
-```
+go get github.com/gaterace/xdml 
 
-to build the vendor directory from Gopkg.toml
 
 ## dmlgenerate
 

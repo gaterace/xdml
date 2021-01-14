@@ -1,4 +1,4 @@
-// Copyright 2017-2019 Demian Harvill
+// Copyright 2017-2021 Demian Harvill
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -16,7 +16,7 @@ syntax = "proto3";
 package DML;
 
 option java_package = "org.gaterace.dml";
-option go_package = "dml";
+option go_package = "github.com/gaterace/xdml/pkg/dml";
 
 enum DmlParameterModifier {
   PARAM_UNKNOWN = 0;
