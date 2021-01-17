@@ -37,6 +37,7 @@ DMLOUTPUTS  : 'dmloutputs';
 DMLQUALID : 'dmlqualid';
 ENUM :  'enum' ;
 PACKAGE : 'package' ;
+GOPACKAGE : 'gopackage' ;
 IMPORT : 'import';
 FIELDSET : 'fieldset' ;
 CLASS : 'class';
@@ -99,6 +100,7 @@ LBRACK	: '[' ;
 LBRACE  : '{' ;
 RBRACE  : '}' ;
 EQUALS  : '=' ;
+SLASH   : '/' ;
 
 WHITE_SPACE	: ( ' '|'\r'|'\t'|'\n' ) -> skip ;
 
@@ -140,7 +142,7 @@ model
     ;
 
 modelParts
-	: packageElement importElements* sourceElements EOF 
+	: packageElement goPackageElement? importElements* sourceElements EOF 
 	;
 
 	
@@ -188,6 +190,10 @@ fieldsetValue
 
 qualifiedId
     : ID (DOT ID)* 
+    ;
+
+goPath
+    : ID ((SLASH | DOT) ID)*
     ;
 
 
@@ -332,6 +338,10 @@ methodReturn
         
 packageElement
     : PACKAGE qualifiedId SEMI 
+    ;
+
+goPackageElement
+    : GOPACKAGE goPath SEMI 
     ;
 
 

@@ -134,4 +134,5 @@ message DmlTree {
   repeated DmlFieldSet fieldset_list = 4;
   repeated DmlClass class_list = 5;
   repeated DmlService service_list = 6;
+  string go_package_name = 7;
 }

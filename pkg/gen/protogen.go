@@ -237,7 +237,11 @@ func ProtoGen(helper *compiler.DmlHelper, outdir string, resequence bool, extern
 	baseName := helper.BaseName
 	genBase.JavaPackage = helper.AstRoot.GetPackageName()
 	genBase.CsharpPackage = baseName
-	genBase.GoPackage = strings.ToLower(baseName)
+
+	genBase.GoPackage = helper.AstRoot.GetGoPackageName()
+	if genBase.GoPackage == "" {
+		genBase.GoPackage = strings.ToLower(baseName)
+	}
 
 	needDmlExtension := true
 

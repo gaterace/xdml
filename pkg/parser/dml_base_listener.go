@@ -99,6 +99,12 @@ func (s *BaseDMLListener) EnterQualifiedId(ctx *QualifiedIdContext) {}
 // ExitQualifiedId is called when production qualifiedId is exited.
 func (s *BaseDMLListener) ExitQualifiedId(ctx *QualifiedIdContext) {}
 
+// EnterGoPath is called when production goPath is entered.
+func (s *BaseDMLListener) EnterGoPath(ctx *GoPathContext) {}
+
+// ExitGoPath is called when production goPath is exited.
+func (s *BaseDMLListener) ExitGoPath(ctx *GoPathContext) {}
+
 // EnterFieldType is called when production fieldType is entered.
 func (s *BaseDMLListener) EnterFieldType(ctx *FieldTypeContext) {}
 
@@ -260,6 +266,12 @@ func (s *BaseDMLListener) EnterPackageElement(ctx *PackageElementContext) {}
 
 // ExitPackageElement is called when production packageElement is exited.
 func (s *BaseDMLListener) ExitPackageElement(ctx *PackageElementContext) {}
+
+// EnterGoPackageElement is called when production goPackageElement is entered.
+func (s *BaseDMLListener) EnterGoPackageElement(ctx *GoPackageElementContext) {}
+
+// ExitGoPackageElement is called when production goPackageElement is exited.
+func (s *BaseDMLListener) ExitGoPackageElement(ctx *GoPackageElementContext) {}
 
 // EnterImportElements is called when production importElements is entered.
 func (s *BaseDMLListener) EnterImportElements(ctx *ImportElementsContext) {}

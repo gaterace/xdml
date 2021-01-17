@@ -71,8 +71,8 @@ func main() {
 	if len(myArgs) > 0 {
 		command = myArgs[0]
 		if command == "version" {
-			fmt.Println("xdml dmlgenerate - version: 0.9.2")
-			fmt.Println("Copyright Demian Harvill 2018")
+			fmt.Println("xdml dmlgenerate - version: 1.0.2")
+			fmt.Println("Copyright Demian Harvill 2017-2021")
 			return
 		}
 	}

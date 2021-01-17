@@ -47,6 +47,9 @@ type DMLListener interface {
 	// EnterQualifiedId is called when entering the qualifiedId production.
 	EnterQualifiedId(c *QualifiedIdContext)
 
+	// EnterGoPath is called when entering the goPath production.
+	EnterGoPath(c *GoPathContext)
+
 	// EnterFieldType is called when entering the fieldType production.
 	EnterFieldType(c *FieldTypeContext)
 
@@ -128,6 +131,9 @@ type DMLListener interface {
 	// EnterPackageElement is called when entering the packageElement production.
 	EnterPackageElement(c *PackageElementContext)
 
+	// EnterGoPackageElement is called when entering the goPackageElement production.
+	EnterGoPackageElement(c *GoPackageElementContext)
+
 	// EnterImportElements is called when entering the importElements production.
 	EnterImportElements(c *ImportElementsContext)
 
@@ -169,6 +175,9 @@ type DMLListener interface {
 
 	// ExitQualifiedId is called when exiting the qualifiedId production.
 	ExitQualifiedId(c *QualifiedIdContext)
+
+	// ExitGoPath is called when exiting the goPath production.
+	ExitGoPath(c *GoPathContext)
 
 	// ExitFieldType is called when exiting the fieldType production.
 	ExitFieldType(c *FieldTypeContext)
@@ -250,6 +259,9 @@ type DMLListener interface {
 
 	// ExitPackageElement is called when exiting the packageElement production.
 	ExitPackageElement(c *PackageElementContext)
+
+	// ExitGoPackageElement is called when exiting the goPackageElement production.
+	ExitGoPackageElement(c *GoPackageElementContext)
 
 	// ExitImportElements is called when exiting the importElements production.
 	ExitImportElements(c *ImportElementsContext)

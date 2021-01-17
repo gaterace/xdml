@@ -75,10 +75,30 @@ func (s *TreeListener) ExitPackageElement(ctx *parser.PackageElementContext) {
 	if ok {
 		s.AstRoot.PackageName = packageName.(string)
 	}
+}
 
+func (s *TreeListener) ExitGoPackageElement(ctx *parser.GoPackageElementContext) {
+	qctx := ctx.GoPath()
+	packageName, ok := s.ctxMap[qctx]
+	if ok {
+		s.AstRoot.GoPackageName = packageName.(string)
+	}
 }
 
 func (s *TreeListener) EnterQualifiedId(ctx *parser.QualifiedIdContext) {
+	var buffer bytes.Buffer
+	for _, child := range ctx.GetChildren() {
+		var payload = child.GetPayload()
+		token, ok := payload.(*antlr.CommonToken)
+		if ok {
+			buffer.WriteString(token.GetText())
+		}
+	}
+
+	s.SetValue(ctx, buffer.String())
+}
+
+func (s *TreeListener) EnterGoPath(ctx *parser.GoPathContext) {
 	var buffer bytes.Buffer
 	for _, child := range ctx.GetChildren() {
 		var payload = child.GetPayload()
