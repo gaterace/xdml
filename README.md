@@ -37,7 +37,7 @@ The current artifacts that can be generated are:
 
 ## Building
 
-Building requires support for Go modules to handle dependencies; this has been tested with go version 15.3:
+Building requires support for Go modules to handle dependencies; this has been tested with go version 1.15.3:
 
 go get github.com/gaterace/xdml 
 
@@ -58,7 +58,7 @@ BrilligService.dml  includes BrilligDomain adn describes a service with methods 
 
 The Antlr4 grammar for the language is defined in antlr/DML.g4
 
-Each source file is a text file with a filename in the form <BasePackageName>.dml
+Each source file is a text file with a filename in the form `<BasePackageName`>.dml .
 Comments start with a double slash (//) and are ignored.
 Comments that start with a triple slash (///) are significant and used to document whatever item follows.
 The first non-blank, non-comment line should give the Java package name, as in:
@@ -67,8 +67,18 @@ The first non-blank, non-comment line should give the Java package name, as in:
 package org.gaterace.brillig.domain;
 ```
 
-In this version, the C# package and Go package are derived from this.
-After this, other source xdml packages can be imported by their <BasePackageName>, ie:
+In this version, the C# package is derived from this.
+
+If you wish to specify a specific path for protocol buffers using Golang, the next non-blank, non-comment line
+should give the Go package, as in:
+
+```
+gopackage github.com/gaterace/xdml/pkg/dml;
+```
+
+This is optional, and if not supplied the Go package will be derived from the Java package.
+
+After this, other source xdml packages can be imported by their ``<BasePackageName`>, ie:
 import “BrilligDomain”;
 
 Typically, the next section is a fieldset section in the form:
@@ -80,12 +90,13 @@ fieldset <fieldSetName> [extends <parentFieldSetName>]{
 }
 ```
 
-Where the extends clause is optional, and implies that this field set is a continuation of the <parentFieldSetName>.  The field definitions are of the form:
+Where the extends clause is optional, and implies that this field set is a continuation of the `<parentFieldSetName`>.  The field definitions are of the form:
 
 /// field documentation, can use multiple lines
-<field_type> <field_name> [<modifier>] [= <field_number>];
 
-Where <modifier> and = <field_number> are optional. The builtin field types (and associated modifiers) are:
+`<field_type`> `<field_name`> [`<modifier`>] [= `<field_number`>];
+
+Where `<modifier`> and = `<field_number`> are optional. The builtin field types (and associated modifiers) are:
 
 *	double
 *	float
@@ -94,15 +105,15 @@ Where <modifier> and = <field_number> are optional. The builtin field types (and
 *	uint32
 *	uint64
 *	bool
-*	string(<max_string_length>)
-*	bytes(<max_byte_array length>) 
-*	chararray(<fixed_string_length>)
-*	bytearray(<fixed_byte_array_length>)
+*	string(`<max_string_length`>)
+*	bytes(`<max_byte_array length`>) 
+*	chararray(`<fixed_string_length`>)
+*	bytearray(`<fixed_byte_array_length`>)
 *	datetime
 *	guid
 *	decimal
 
-The field type can also be a Class name or Enum name as described later. If the = <field_number> is not given, then the implied field_number is one greater than the last field number. This can be used in the generation of protobuf definitions. By convention, field names are lower case with underscores; they will be converted to camel case or other patterns as needed.
+The field type can also be a Class name or Enum name as described later. If the = `<field_number`> is not given, then the implied field_number is one greater than the last field number. This can be used in the generation of protobuf definitions. By convention, field names are lower case with underscores; they will be converted to camel case or other patterns as needed.
 
 An Enum can be specified as
 
@@ -116,17 +127,17 @@ enum <enumName> {
 }
 ```
 
-By convention, <enum_value_name> is upper case with underscores, as in:
+By convention, `<enum_value_name`> is upper case with underscores, as in:
 
 ```
  MAKER_EVENT_UNKNOWN = 0;
- ```
+```
 
 A class or struct is defined as:
 
 ```
 /// class documentation
-class <className> fieldset(<fieldSetName>) [table (<tableName)}{
+class <className> fieldset(<fieldSetName>) [table (<tableName>)] {
     // class field definitions go here, field documentation is automatic
     <class_field_modifier> <field_name>; 
 
@@ -134,7 +145,7 @@ class <className> fieldset(<fieldSetName>) [table (<tableName)}{
 }
 ```
 
-Where the field_name is described in the fieldSet (or one that it is derived from). By convention, the <className> is camel case (as in UserRole) , with the first character upper case.  The valid <class_field_modifiers> and semantics are:
+Where the field_name is described in the fieldSet (or one that it is derived from). By convention, the `<className`> is camel case (as in UserRole) , with the first character upper case.  The valid `<class_field_modifiers`> and semantics are:
 
 *	required : class field is required (NOT NULL for SQL)
 *	optional: class field is optional (NULL for SQL)
@@ -146,7 +157,7 @@ Where the field_name is described in the fieldSet (or one that it is derived fro
 *	map: class field is a one-to-many map to instances of another class
 *	list: class field is an embedded list of instances of another class
 
-If the table(tableName>) option is used, SQL indices can be defined.  Some examples are:
+If the table(tableName`>) option is used, SQL indices can be defined.  Some examples are:
 
 ```
 index primary (group_id);
@@ -154,7 +165,7 @@ index unique (account_id, group_name);
 index nonunique (account_name);
 ```
 
-If the table(tableName>) option is not used, then this class or struct will not be backed by a SQL table and just used for protobuf messages. 
+If the table(`<tableName`>) option is not used, then this class or struct will not be backed by a SQL table and just used for protobuf messages. 
 
 To define a service, use:
 
@@ -165,13 +176,13 @@ service <serviceName> fieldset(<fieldSetName>) {
 }
 ```
 
-By convention, <serviceName>, like <className> is camel case with first letter uppercase, as in BrilligSvc.
+By convention, `<serviceName`>, like `<className`> is camel case with first letter uppercase, as in BrilligSvc.
 
 A method definition looks like:
 
 ```
 /// method documentation
-method <method_name> [pattern <proc_type> <qualified_class_name]{    
+method <method_name> [pattern <proc_type> <qualified_class_name>]{    
     <paramModifier> <field_name>;
     // repeated as necessary     
 }
@@ -182,16 +193,16 @@ returns {
 ```
 
 
-Again, by convention, <method_name> is lowercase with underscores (like <fieldname>), as in create_account. If the optional pattern clause is given, this will be used to generate SQL stored procedures. The valid <proc_type> values are:
+Again, by convention, `<method_name`> is lowercase with underscores (like `<fieldname`>), as in create_account. If the optional pattern clause is given, this will be used to generate SQL stored procedures. The valid `<proc_type`> values are:
 
 *	select
 *	insert
 *	update
 *	delete
 
-And the <qualified_class_name> is the <dmlPackageName>.<className> if the class is defined in a separate included dml package, or simply <className> if defined in this package.
+And the `<qualified_class_name`> is the `<dmlPackageName`>.`<className`> if the class is defined in a separate included dml package, or simply `<className`> if defined in this package.
 
-The valid <paramModifier> values are a subset of the <classFieldModifier> values seen before:
+The valid `<paramModifier`> values are a subset of the `<classFieldModifier`> values seen before:
 
 *	required
 *	optional
